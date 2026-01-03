@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PasswordInput } from '@/components/forms/PasswordInput'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function SignupPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
@@ -28,29 +30,22 @@ export default function SignupPage() {
     },
   })
 
+  const passwordValue = watch('password', '')
+
   const onSubmit = async (data: SignupInput) => {
-    console.log('🚀 Form submitted with data:', data)
     setIsLoading(true)
     setError('')
 
     try {
-      console.log('📡 Sending request to /api/auth/signup')
-      
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
 
-      console.log('📥 Response status:', response.status)
-      
       const result = await response.json()
-      console.log('📦 Response data:', result)
 
       if (!response.ok) {
-        // Handle validation errors
         if (result.details) {
           const errorMessages = result.details
             .map((detail: any) => detail.message)
@@ -60,12 +55,8 @@ export default function SignupPage() {
         throw new Error(result.error || 'Failed to create account')
       }
 
-      console.log('✅ Account created successfully!')
-      
-      // Redirect to login page on success
       router.push('/login?registered=true')
     } catch (err) {
-      console.error('❌ Signup error:', err)
       setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
       setIsLoading(false)
@@ -73,8 +64,14 @@ export default function SignupPage() {
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="space-y-1">
+        <div className="flex justify-center mb-4">
+          <div className="text-4xl font-bold">
+            <span className="text-slate-900">Menu</span>
+            <span className="text-blue-600">Scan</span>
+          </div>
+        </div>
         <CardTitle className="text-2xl font-bold text-center">
           Create an account
         </CardTitle>
@@ -92,7 +89,7 @@ export default function SignupPage() {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Full Name *</Label>
             <Input
               id="name"
               placeholder="John Doe"
@@ -106,7 +103,7 @@ export default function SignupPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email *</Label>
             <Input
               id="email"
               type="email"
@@ -133,17 +130,19 @@ export default function SignupPage() {
             {errors.phone && (
               <p className="text-sm text-red-500">{errors.phone.message}</p>
             )}
+            <p className="text-xs text-slate-500">Pakistani phone number format</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
+            <Label htmlFor="password">Password *</Label>
+            <PasswordInput
               id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
+              value={passwordValue}
+              onChange={(e) => {
+                register('password').onChange(e)
+              }}
               disabled={isLoading}
-              autoComplete="new-password"
+              showStrength={true}
             />
             {errors.password && (
               <p className="text-sm text-red-500">{errors.password.message}</p>
@@ -151,7 +150,14 @@ export default function SignupPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Create account'}
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Creating account...
+              </div>
+            ) : (
+              'Create account'
+            )}
           </Button>
         </form>
       </CardContent>
@@ -159,9 +165,12 @@ export default function SignupPage() {
       <CardFooter className="flex flex-col space-y-2">
         <div className="text-sm text-center text-slate-600">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-blue-600 hover:underline font-medium">
             Sign in
           </Link>
+        </div>
+        <div className="text-xs text-center text-slate-500">
+          By signing up, you agree to our Terms of Service
         </div>
       </CardFooter>
     </Card>

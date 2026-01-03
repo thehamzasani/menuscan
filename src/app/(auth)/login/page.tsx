@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PasswordInput } from '@/components/forms/PasswordInput'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -23,10 +24,13 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   })
+
+  const passwordValue = watch('password', '')
 
   useEffect(() => {
     if (searchParams.get('registered') === 'true') {
@@ -50,7 +54,6 @@ export default function LoginPage() {
         throw new Error(result.error)
       }
 
-      // Redirect based on user role (will be implemented in session callback)
       router.push('/dashboard')
       router.refresh()
     } catch (err) {
@@ -61,10 +64,16 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="space-y-1">
+        <div className="flex justify-center mb-4">
+          <div className="text-4xl font-bold">
+            <span className="text-slate-900">Menu</span>
+            <span className="text-blue-600">Scan</span>
+          </div>
+        </div>
         <CardTitle className="text-2xl font-bold text-center">
-          Sign in to MenuScan
+          Welcome back
         </CardTitle>
         <CardDescription className="text-center">
           Enter your credentials to access your account
@@ -93,6 +102,7 @@ export default function LoginPage() {
               placeholder="john@example.com"
               {...register('email')}
               disabled={isLoading}
+              autoComplete="email"
             />
             {errors.email && (
               <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -100,13 +110,23 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
+            <div className="flex justify-between items-center">
+              <Label htmlFor="password">Password</Label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <PasswordInput
               id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
+              value={passwordValue}
+              onChange={(e) => {
+                register('password').onChange(e)
+              }}
               disabled={isLoading}
+              showStrength={false}
             />
             {errors.password && (
               <p className="text-sm text-red-500">{errors.password.message}</p>
@@ -114,7 +134,14 @@ export default function LoginPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Signing in...
+              </div>
+            ) : (
+              'Sign in'
+            )}
           </Button>
         </form>
       </CardContent>
@@ -122,7 +149,7 @@ export default function LoginPage() {
       <CardFooter className="flex flex-col space-y-2">
         <div className="text-sm text-center text-slate-600">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-blue-600 hover:underline">
+          <Link href="/signup" className="text-blue-600 hover:underline font-medium">
             Create account
           </Link>
         </div>

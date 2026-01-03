@@ -1,0 +1,23 @@
+// Re-export all model interfaces for easy importing
+export type { IUser } from '@/models/User'
+export type { ISuperAdmin } from '@/models/SuperAdmin'
+export type { IRestaurant } from '@/models/Restaurant'
+export type { ITable } from '@/models/Table'
+export type { ICategory } from '@/models/Category'
+export type { IMenuItem } from '@/models/MenuItem'
+export type { ISession } from '@/models/Session'
+export type { IOrder } from '@/models/Order'
+export type { IMessage } from '@/models/Message'
+export type { IWaiterCall } from '@/models/WaiterCall'
+export type { ICreditTransaction } from '@/models/CreditTransaction'
+
+// Additional type helpers
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'cancelled'
+export type TableStatus = 'available' | 'occupied' | 'reserved'
+export type SessionStatus = 'active' | 'completed' | 'abandoned'
+export type SenderType = 'customer' | 'owner' | 'staff'
+export type CallReason = 'service' | 'bill' | 'help' | 'water' | 'other'
+export type CallStatus = 'pending' | 'acknowledged' | 'completed' | 'cancelled'
+export type TransactionType = 'purchase' | 'admin_grant' | 'usage' | 'refund'
+export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise'
+export type SubscriptionStatus = 'active' | 'suspended' | 'cancelled'
