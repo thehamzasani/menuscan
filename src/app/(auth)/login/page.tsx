@@ -32,13 +32,12 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    control, // CHANGED: Added control
+    control, 
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   })
 
-  // REMOVED: watch for passwordValue - no longer needed
 
   useEffect(() => {
     if (searchParams.get('registered') === 'true') {
@@ -60,10 +59,24 @@ export default function LoginPage() {
       if (result?.error) {
         throw new Error(result.error)
       }
-      console.log('Login successful:', result)
 
-      router.push('/dashboard')
-      router.refresh()
+      // When signIn succeeds, fetch session to determine role and redirect accordingly
+      if (result?.ok) {
+        // small delay to ensure the session cookie is set
+        await new Promise(resolve => setTimeout(resolve, 300))
+
+        const sessionResponse = await fetch('/api/auth/session')
+        const session = await sessionResponse.json()
+        const role = session?.user?.role
+
+        if (role === 'super_admin') {
+          router.push('/super-admin/dashboard')
+        } else {
+          router.push('/dashboard')
+        }
+
+        router.refresh()
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -185,7 +198,6 @@ export default function LoginPage() {
               </Link>
             </div>
             
-            {/* CHANGED: Wrapped PasswordInput with Controller */}
             <Controller
               name="password"
               control={control}
