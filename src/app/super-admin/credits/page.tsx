@@ -139,6 +139,7 @@ export default function CreditsPage() {
           <Plus className="mr-2 h-4 w-4" />
           Grant Credits
         </Button>
+        
       </div>
 
       {/* Stats Cards */}
@@ -198,7 +199,7 @@ export default function CreditsPage() {
               setTypeFilter(value)
               setPage(1)
             }}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-45">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
