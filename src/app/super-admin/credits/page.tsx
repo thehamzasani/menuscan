@@ -135,11 +135,20 @@ export default function CreditsPage() {
           <h1 className="text-3xl font-bold text-slate-900">Credit Management</h1>
           <p className="mt-2 text-slate-600">Grant and manage restaurant credits</p>
         </div>
-        <Button onClick={() => setModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Grant Credits
-        </Button>
-        
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={async () => {
+              window.open('/api/admin/export/transactions', '_blank')
+            }}
+          >
+            Export CSV
+          </Button>
+          <Button onClick={() => setModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Grant Credits
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -252,9 +261,8 @@ export default function CreditsPage() {
                         {getTypeBadge(transaction.type)}
                       </TableCell>
                       <TableCell>
-                        <span className={`font-semibold ${
-                          transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
+                        <span className={`font-semibold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                          }`}>
                           {transaction.amount > 0 ? '+' : ''}{transaction.amount}
                         </span>
                       </TableCell>

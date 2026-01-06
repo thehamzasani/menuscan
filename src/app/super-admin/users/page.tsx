@@ -129,7 +129,7 @@ export default function UsersPage() {
               setRoleFilter(value)
               setPage(1)
             }}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full md:w-45">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
