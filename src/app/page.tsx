@@ -13,9 +13,9 @@ export default function HomePage() {
         <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-[5rem]">
           Menu<span className="text-blue-600">Scan</span>
         </h1>
-        
+
         <p className="text-center text-xl text-slate-600 max-w-2xl">
-          Digital menu and ordering system for restaurants in Pakistan. 
+          Digital menu and ordering system for restaurants in Pakistan.
           Scan QR codes, order instantly, and streamline your restaurant operations.
         </p>
 
@@ -33,10 +33,22 @@ export default function HomePage() {
                   Get Started - Free
                 </Button>
               </Link>
-              
+
               <Link href="/login">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto">
                   Sign In
+                </Button>
+              </Link>
+
+              <Link href="/signup/restaurant">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Start Free - Restaurant Owners
+                </Button>
+              </Link>
+
+              <Link href="/signup">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                  Regular Sign Up
                 </Button>
               </Link>
             </>

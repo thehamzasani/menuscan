@@ -129,7 +129,7 @@ export default function CreditsPage() {
 
   return (
     <div>
-      {/* Header */}
+      {/* Header */}  
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Credit Management</h1>

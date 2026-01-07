@@ -20,14 +20,26 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  useEffect(() => {
-  const checkSession = async () => {
-    const response = await fetch('/api/auth/session')
-    const session = await response.json()
-    console.log('Current session:', session)
+//   useEffect(() => {
+//   const checkSession = async () => {
+//     const response = await fetch('/api/auth/session')
+//     const session = await response.json()
+//     console.log('Current session:', session)
+//   }
+//   checkSession()
+// }, [])
+
+// Add to existing useEffect
+useEffect(() => {
+  if (searchParams.get('registered') === 'true') {
+    const type = searchParams.get('type')
+    if (type === 'restaurant') {
+      setSuccessMessage('Restaurant created successfully! You got 100 free credits. Please sign in.')
+    } else {
+      setSuccessMessage('Account created successfully! Please sign in.')
+    }
   }
-  checkSession()
-}, [])
+}, [searchParams])
 
   const {
     register,
