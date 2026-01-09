@@ -566,6 +566,49 @@ export default function RestaurantSignupForm() {
     }
   }
 
+  // const onSubmit = async (data: FormData) => {
+  //   setIsLoading(true)
+  //   setError('')
+
+  //   try {
+  //     const response = await fetch('/api/restaurants/create', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(data),
+  //     })
+
+  //     // Check if response is JSON 
+  //     // const contentType = response.headers.get('content-type')
+  //     // if (!contentType || !contentType.includes('application/json')) {
+  //     //   throw new Error('Server returned an invalid response. Please try again.')
+  //     // }
+  //     //?Testing
+  //     const rawText = await response.text()
+  //     console.error('RAW SERVER RESPONSE:', rawText)
+
+  //     throw new Error('Server returned an invalid response. Check console.')
+
+  //     const result = await response.json()
+
+  //     if (!response.ok) {
+  //       if (result.details) {
+  //         const errorMessages = result.details
+  //           .map((detail: any) => detail.message)
+  //           .join(', ')
+  //         throw new Error(errorMessages)
+  //       }
+  //       throw new Error(result.error || 'Failed to create restaurant')
+  //     }
+
+  //     router.push('/login?registered=true&type=restaurant')
+  //   } catch (err) {
+  //     console.error('Signup error:', err)
+  //     setError(err instanceof Error ? err.message : 'Something went wrong')
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
   return (
     <div className="w-full max-w-2xl">
       <Card>
@@ -620,7 +663,7 @@ export default function RestaurantSignupForm() {
                       id="ownerPassword"
                       value={field.value}
                       onChange={field.onChange}
-            
+
                       showStrength
                     />
                   )}
