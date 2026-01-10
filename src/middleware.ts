@@ -33,12 +33,17 @@ export default withAuth(
 
 export const config = {
   matcher: [
+    // Frontend routes
     '/dashboard/:path*',
     '/super-admin/:path*',
+    
+    // API routes that need authentication
     '/api/admin/:path*',
-    // Removed '/api/restaurants/:path*' - this was blocking the signup!
+    '/api/restaurants/manage/:path*',  // Protected management routes
+    '/api/restaurants/stats',           // Protected stats route
     '/api/menu/:path*',
     '/api/tables/:path*',
     '/api/orders/:path*',
+    '/api/chat/:path*',
   ],
 }
