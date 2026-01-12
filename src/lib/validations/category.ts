@@ -21,10 +21,7 @@ export const categorySchema = z.object({
     .string()
     .optional()
     .or(z.literal('')),
-  isActive: z
-    .boolean()
-    .optional()
-    .default(true),  // Make it optional with a default
+  isActive: z.boolean(), // Required boolean
 })
 
 // Schema for reordering categories

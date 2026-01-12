@@ -1,23 +1,40 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2 } from 'lucide-react'
-import { categorySchema } from '@/lib/validations/category'
 import IconPicker from './IconPicker'
 
-// Define the form data type explicitly
-interface CategoryFormData {
-  name: string
-  nameUrdu?: string
-  description?: string
-  icon?: string
-  isActive: boolean
-}
+// Define schema locally without .default() to avoid optional input type
+const categoryFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Category name must be at least 2 characters')
+    .max(50, 'Category name must be less than 50 characters')
+    .trim(),
+  nameUrdu: z
+    .string()
+    .max(50, 'Urdu name must be less than 50 characters')
+    .optional()
+    .or(z.literal('')),
+  description: z
+    .string()
+    .max(200, 'Description must be less than 200 characters')
+    .optional()
+    .or(z.literal('')),
+  icon: z
+    .string()
+    .optional()
+    .or(z.literal('')),
+  isActive: z.boolean(), // Required boolean, no .default()
+})
+
+type CategoryFormData = z.infer<typeof categoryFormSchema>
 
 interface CategoryFormProps {
   initialData?: CategoryFormData & { _id?: string }
@@ -35,15 +52,16 @@ export default function CategoryForm({ initialData, onSuccess, onCancel }: Categ
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<CategoryFormData>({
-    resolver: zodResolver(categorySchema),
+    resolver: zodResolver(categoryFormSchema),
     defaultValues: {
       name: initialData?.name || '',
       nameUrdu: initialData?.nameUrdu || '',
       description: initialData?.description || '',
       icon: initialData?.icon || '',
-      isActive: initialData?.isActive !== undefined ? initialData.isActive : true,
+      isActive: initialData?.isActive ?? true,
     },
   })
 
@@ -147,12 +165,19 @@ export default function CategoryForm({ initialData, onSuccess, onCancel }: Categ
       </div>
 
       <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="isActive"
-          {...register('isActive')}
-          disabled={isLoading}
-          className="rounded border-slate-300"
+        <Controller
+          name="isActive"
+          control={control}
+          render={({ field }) => (
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              disabled={isLoading}
+              className="rounded border-slate-300"
+            />
+          )}
         />
         <Label htmlFor="isActive" className="cursor-pointer">
           Active (visible to customers)
