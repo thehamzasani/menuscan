@@ -1,6 +1,7 @@
 'use client'
-// todo: modify the menu page
+
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +11,10 @@ import {
   Edit, 
   Trash2, 
   GripVertical,
-  AlertCircle 
+  AlertCircle,
+  UtensilsCrossed,
+  ArrowRight,
+  LayoutGrid
 } from 'lucide-react'
 import CategoryForm from '@/components/menu/CategoryForm'
 import CategoryIcon from '@/components/menu/CategoryIcon'
@@ -117,6 +121,7 @@ function SortableCategory({ category, onEdit, onDelete }: {
 }
 
 export default function MenuPage() {
+  const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -162,7 +167,6 @@ export default function MenuPage() {
       const newCategories = arrayMove(categories, oldIndex, newIndex)
       setCategories(newCategories)
 
-      // Save new order to backend
       try {
         await fetch('/api/menu/categories/reorder', {
           method: 'POST',
@@ -173,7 +177,6 @@ export default function MenuPage() {
         })
       } catch (error) {
         console.error('Failed to reorder categories:', error)
-        // Revert on error
         fetchCategories()
       }
     }
@@ -223,7 +226,7 @@ export default function MenuPage() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600">Loading categories...</p>
+          <p className="mt-4 text-slate-600">Loading menu...</p>
         </div>
       </div>
     )
@@ -231,11 +234,56 @@ export default function MenuPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Menu Categories</h1>
-          <p className="mt-2 text-slate-600">Organize your menu items into categories</p>
+      {/* Header with Quick Actions */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Menu Management</h1>
+            <p className="mt-2 text-slate-600">Manage your menu categories and items</p>
+          </div>
         </div>
+
+        {/* Quick Action Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 border-transparent hover:border-blue-500" onClick={() => router.push('/menu/items')}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <UtensilsCrossed className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Menu Items</h3>
+                    <p className="text-sm text-slate-500">Add and manage your dishes</p>
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 text-slate-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow border-2 border-blue-200 bg-blue-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <LayoutGrid className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Categories</h3>
+                    <p className="text-sm text-slate-600">Currently viewing</p>
+                  </div>
+                </div>
+                <Badge className="bg-blue-600 text-white">Active</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Categories Section */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">Categories</h2>
         <Button onClick={() => setShowForm(true)} disabled={showForm}>
           <Plus className="mr-2 h-4 w-4" />
           Add Category
@@ -317,6 +365,28 @@ export default function MenuPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Helper Text */}
+      {categories.length > 0 && (
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <UtensilsCrossed className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-blue-900">Next Step: Add Menu Items</p>
+              <p className="text-sm text-blue-700 mt-1">
+                Now that you have categories, click on "Menu Items" above to start adding your dishes.
+              </p>
+              <Button 
+                onClick={() => router.push('/menu/items')} 
+                variant="link" 
+                className="text-blue-600 p-0 h-auto mt-2"
+              >
+                Go to Menu Items →
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
